@@ -7,13 +7,14 @@ import (
 	"github.com/notblessy/serv/utils"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 )
 
 type (
 	//Service define repository generator
 	Service interface {
-		GenerateService(name string) error
+		GenerateService(name string, gitOrigin string) error
 	}
 
 	repository struct{}
@@ -24,51 +25,57 @@ func NewServiceGenerator() Service {
 	return &repository{}
 }
 
-func (r *repository) GenerateService(name string) error {
+func (r *repository) GenerateService(name string, gitOrigin string) error {
 	_, err := os.Stat(name)
 	if os.IsNotExist(err) {
 		err = r.checkProjectIfExist(name)
 	}
 
+	or := strings.Split(gitOrigin, ".")
+	if len(or) == 2 {
+		_, ok := utils.SupportedGit[or[0]]
+		if !ok {
+			log.Fatal("unknown git")
+		}
+	}
+
+	fmt.Println(utils.DefaultServBumper)
+
+	gomod, err := os.Create(fmt.Sprintf(`%s/go.mod`, name))
+	if err != nil {
+		log.Fatal("error create go mod")
+	}
+
+	goversion := runtime.Version()
+	_, err = gomod.WriteString(utils.DefaultGoMod(name, gitOrigin, goversion[len(goversion)-4:]))
+	fatalOnError(err)
+
 	main, err := os.Create(fmt.Sprintf(`%s/main.go`, name))
+	fatalOnError(err)
 
-	if err != nil {
-		log.Fatal("error create main")
-	}
+	_, err = main.WriteString(utils.DefaultMain)
+	fatalOnError(err)
 
-	_, err = main.WriteString(utils.MainMap)
+	err = os.Mkdir(fmt.Sprintf("%s/config", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/console", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err := os.Mkdir(fmt.Sprintf("%s/config", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/model", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err := os.Mkdir(fmt.Sprintf("%s/console", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/usecase", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err := os.Mkdir(fmt.Sprintf("%s/model", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/repository", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err := os.Mkdir(fmt.Sprintf("%s/usecase", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/utils", name), os.ModePerm)
+	fatalOnError(err)
 
-	if err := os.Mkdir(fmt.Sprintf("%s/repository", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := os.Mkdir(fmt.Sprintf("%s/utils", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := os.Mkdir(fmt.Sprintf("%s/delivery", name), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
+	err = os.Mkdir(fmt.Sprintf("%s/delivery", name), os.ModePerm)
+	fatalOnError(err)
 
 	return nil
 }
@@ -92,4 +99,10 @@ func (r *repository) checkProjectIfExist(name string) error {
 	}
 
 	return nil
+}
+
+func fatalOnError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }

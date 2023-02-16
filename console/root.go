@@ -10,7 +10,14 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "serv",
 	Short: "serv is go service generator",
-	Long:  `serv can scaffold a go service like a toss.`,
+	Long: `
+   _____  ______ ____  _    __
+  / ___/ / ____// __ \| |  / /
+  \__ \ / __/  / /_/ /| | / / 
+ ___/ // /___ / _, _/ | |/ /  
+/____//_____//_/ |_|  |___/   
+                              
+serv can scaffold a go service like a toss.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -24,5 +31,4 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(generatorCmd)
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
