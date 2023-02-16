@@ -26,34 +26,17 @@ func NewServiceGenerator() Service {
 }
 
 func (r *repository) GenerateService(name string, gitOrigin string) error {
-	_, err := os.Stat(name)
-	if os.IsNotExist(err) {
-		err = r.checkProjectIfExist(name)
-	}
-
-	or := strings.Split(gitOrigin, ".")
-	if len(or) == 2 {
-		_, ok := utils.SupportedGit[or[0]]
-		if !ok {
-			log.Fatal("unknown git")
-		}
-	}
-
 	fmt.Println(utils.DefaultServBumper)
 
-	gomod, err := os.Create(fmt.Sprintf(`%s/go.mod`, name))
-	if err != nil {
-		log.Fatal("error create go mod")
+	_, err := os.Stat(name)
+	if os.IsExist(err) {
+		log.Fatal(err)
 	}
 
-	goversion := runtime.Version()
-	_, err = gomod.WriteString(utils.DefaultGoMod(name, gitOrigin, goversion[len(goversion)-4:]))
+	err = r.createNewProjectDirectory(name)
 	fatalOnError(err)
 
-	main, err := os.Create(fmt.Sprintf(`%s/main.go`, name))
-	fatalOnError(err)
-
-	_, err = main.WriteString(utils.DefaultMain)
+	err = r.initGoService(name, gitOrigin)
 	fatalOnError(err)
 
 	err = os.Mkdir(fmt.Sprintf("%s/config", name), os.ModePerm)
@@ -80,7 +63,7 @@ func (r *repository) GenerateService(name string, gitOrigin string) error {
 	return nil
 }
 
-func (r *repository) checkProjectIfExist(name string) error {
+func (r *repository) createNewProjectDirectory(name string) error {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(fmt.Sprintf("%s is OK!, want to scaffold a go service (Y/N)? ", name))
 
@@ -96,6 +79,39 @@ func (r *repository) checkProjectIfExist(name string) error {
 
 	if err := os.Mkdir(name, os.ModePerm); err != nil {
 		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (r *repository) initGoService(name, gitOrigin string) error {
+	or := strings.Split(gitOrigin, ".")
+	if len(or) == 2 {
+		_, ok := utils.SupportedGit[or[0]]
+		if !ok {
+			log.Fatal("unknown git")
+		}
+	}
+
+	gomod, err := os.Create(fmt.Sprintf(`%s/go.mod`, name))
+	if err != nil {
+		return errors.New("error generate go mod")
+	}
+
+	goversion := runtime.Version()
+	_, err = gomod.WriteString(utils.DefaultGoMod(name, gitOrigin, goversion[len(goversion)-4:]))
+	if err != nil {
+		return err
+	}
+
+	main, err := os.Create(fmt.Sprintf(`%s/main.go`, name))
+	if err != nil {
+		return err
+	}
+
+	_, err = main.WriteString(utils.DefaultMain)
+	if err != nil {
+		return err
 	}
 
 	return nil
