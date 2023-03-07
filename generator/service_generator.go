@@ -113,7 +113,7 @@ func (r repository) generateScaffoldScript() {
 	contents := `#!/usr/bin/env bash
 name=$1;
 find $name -type f -exec sed -i '' "s/skelago/$name/g" {} \;
-cp $name/.env.example $name/.env;
+cp $name/.env.sample $name/.env;
 cd $name;
 go mod tidy;
 `
