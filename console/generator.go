@@ -2,9 +2,10 @@ package console
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/notblessy/serv/generator"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 var generatorCmd = &cobra.Command{
@@ -23,7 +24,6 @@ var generatorCmd = &cobra.Command{
 }
 
 func generateProject(cmd *cobra.Command, args []string) {
-	fmt.Println(args)
 	if args[0] != "" && args[1] != "" {
 		s := generator.NewServiceGenerator()
 		err := s.GenerateService(args[0], args[1])
