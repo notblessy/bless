@@ -9,7 +9,7 @@ import (
 )
 
 var generatorCmd = &cobra.Command{
-	Use:   "generate [name] [origin]",
+	Use:   "tolong-generate [name] [origin]",
 	Short: "a service generator",
 	Long: `
    _____  ______ ____  _    __
