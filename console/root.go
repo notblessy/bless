@@ -8,16 +8,15 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "serv",
-	Short: "serv is go service generator",
+	Use:   "bless",
+	Short: "bless is go service generator",
 	Long: `
-   _____  ______ ____  _    __
-  / ___/ / ____// __ \| |  / /
-  \__ \ / __/  / /_/ /| | / / 
- ___/ // /___ / _, _/ | |/ /  
-/____//_____//_/ |_|  |___/   
-                              
-serv can scaffold a go service like a toss.`,
+	  __    __              
+	 / /_  / /__  __________
+  / __ \/ / _ \/ ___/ ___/
+ / /_/ / /  __(__  |__  ) 
+/_.___/_/\___/____/____/                         
+bless can scaffold a go service like a toss.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

@@ -12,13 +12,12 @@ var generatorCmd = &cobra.Command{
 	Use:   "tolong-generate [name] [origin]",
 	Short: "a service generator",
 	Long: `
-   _____  ______ ____  _    __
-  / ___/ / ____// __ \| |  / /
-  \__ \ / __/  / /_/ /| | / / 
- ___/ // /___ / _, _/ | |/ /  
-/____//_____//_/ |_|  |___/   
-                              
-"generate" can generate project with one hit, example 'serv generate go-service github.com/notblessy`,
+	  __    __              
+	 / /_  / /__  __________
+  / __ \/ / _ \/ ___/ ___/
+ / /_/ / /  __(__  |__  ) 
+/_.___/_/\___/____/____/                    
+"tolong-generate" can generate project with one hit, example 'bless tolong-generate go-service github.com/notblessy`,
 	Args: cobra.ExactArgs(2),
 	Run:  generateProject,
 }
