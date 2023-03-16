@@ -1,9 +1,9 @@
 /*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 Frederich Blessy <frederichblessy@gmail.com>
 */
 package main
 
-import "github.com/notblessy/serv/console"
+import "github.com/notblessy/bless/console"
 
 func main() {
 	console.Execute()

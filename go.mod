@@ -1,4 +1,4 @@
-module github.com/notblessy/serv
+module github.com/notblessy/bless
 
 go 1.18
 

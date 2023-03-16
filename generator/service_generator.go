@@ -11,11 +11,11 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/notblessy/serv/utils"
+	"github.com/notblessy/bless/utils"
 )
 
 type (
-	//Service define repository generator
+	// Service define repository generator
 	Service interface {
 		GenerateService(name string, gitOrigin string) error
 	}

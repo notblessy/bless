@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/notblessy/serv/generator"
+	"github.com/notblessy/bless/generator"
 	"github.com/spf13/cobra"
 )
 
