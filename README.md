@@ -11,6 +11,8 @@ go install github.com/notblessy/bless
 ## Feature
 
 - [x] Scaffold microservice directory
+- [x] Included postgresql
+- [x] Unit Test
 - [ ] Generate repository
 
 ## Usage

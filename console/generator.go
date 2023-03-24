@@ -18,19 +18,20 @@ var generatorCmd = &cobra.Command{
  / /_/ / /  __(__  |__  ) 
 /_.___/_/\___/____/____/                    
 "tolong-generate" can generate project with one hit, example 'bless tolong-generate go-service github.com/notblessy`,
-	Args: cobra.ExactArgs(2),
+	Args: cobra.ExactArgs(3),
 	Run:  generateProject,
 }
 
 func generateProject(cmd *cobra.Command, args []string) {
-	if args[0] != "" && args[1] != "" {
+	if args[0] != "" && args[1] != "" && args[2] != "" {
 		s := generator.NewServiceGenerator()
-		err := s.GenerateService(args[0], args[1])
+		err := s.GenerateService(args[0], args[1], args[2])
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(args[0])
+
+		fmt.Printf("scaffolding finished with name: %s", args[0])
 	} else {
-		fmt.Println("need argument <service-name> <git-origin>' ")
+		log.Fatal("expected argument <service-name> <git-origin> <git-project>' ")
 	}
 }

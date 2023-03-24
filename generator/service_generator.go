@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -17,12 +16,13 @@ import (
 type (
 	// Service define repository generator
 	Service interface {
-		GenerateService(name string, gitOrigin string) error
+		GenerateService(name string, gitOrigin string, project string) error
 	}
 
 	repository struct {
 		name      string
 		gitOrigin string
+		project   string
 	}
 )
 
@@ -37,9 +37,10 @@ func NewServiceGenerator() Service {
 	return &repository{}
 }
 
-func (r *repository) GenerateService(name string, gitOrigin string) error {
+func (r repository) GenerateService(name string, gitOrigin string, project string) error {
 	r.name = name
 	r.gitOrigin = gitOrigin
+	r.project = project
 
 	fmt.Println(utils.DefaultServBumper)
 
@@ -52,16 +53,18 @@ func (r *repository) GenerateService(name string, gitOrigin string) error {
 
 	r.pullSkelago(r.name)
 	r.generateScaffoldScript()
-	r.scaffold(r.name)
+	r.scaffold(r.name, r.gitOrigin, r.project)
 
 	return nil
 }
 
-func (r *repository) checkExistingProjectDirectory(name string) error {
+func (r repository) checkExistingProjectDirectory(name string) error {
+	fmt.Println("Check existing project name...")
+
 	_, err := os.Stat(name)
 	if os.IsNotExist(err) {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(fmt.Sprintf("%s is OK!, want to scaffold a go service (Y/N)? ", name))
+		fmt.Println(fmt.Sprintf("%s is OK!, want to scaffold a go service (Y/N)? ", name))
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -80,19 +83,10 @@ func (r *repository) checkExistingProjectDirectory(name string) error {
 }
 
 func (r repository) pullSkelago(name string) {
-	body := `#!/usr/bin/env zsh
-	name=$1;
-	cd $name;
-	git init;
-	git remote add origin git@github.com:notblessy/skelago.git;
-	git remote -v;
-	git fetch;	
-	git pull origin main;
-	rm -rf .git;
-	cd ..;
-`
-	bt := []byte(body)
-	err := ioutil.WriteFile(skelago, bt, os.ModePerm)
+	fmt.Println("generating structures...")
+
+	bt := []byte(utils.DefaultPullerScript)
+	err := os.WriteFile(skelago, bt, os.ModePerm)
 	if err != nil {
 		r.clearOnError("fail creating pull script sh")
 	}
@@ -110,26 +104,24 @@ func (r repository) pullSkelago(name string) {
 
 // generateScaffoldScript creates scaffold bash script
 func (r repository) generateScaffoldScript() {
-	contents := `#!/usr/bin/env bash
-name=$1;
-find $name -type f -exec sed -i '' "s/skelago/$name/g" {} \;
-cp $name/.env.sample $name/.env;
-cd $name;
-go mod tidy;
-`
-	bt := []byte(contents)
-	err := ioutil.WriteFile(scaffolder, bt, 0644)
+	fmt.Println("setup project scaffolder...")
+
+	bt := []byte(utils.DefaultGeneratorScript)
+	err := os.WriteFile(scaffolder, bt, 0644)
 	if err != nil {
 		r.clearOnError("fail when create scaffold script")
 	}
 }
 
 // scaffold runs scaffold script
-func (r repository) scaffold(name string) {
-	cmd := exec.Command(bash, scaffolder, name)
+func (r repository) scaffold(name string, gitOrigin string, project string) {
+	fmt.Println("start scaffolding project: " + name)
+
+	cmd := exec.Command(bash, scaffolder, name, gitOrigin, project)
 	defer func() {
-		_ = os.Remove(scaffolder)
+		// _ = os.Remove(scaffolder)
 	}()
+
 	err := r.runScript(cmd)
 	if err != nil {
 		fmt.Println(err)
