@@ -1,0 +1,24 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/notblessy/bless
+options:
+  commits:
+     filters:
+       Type:
+         - feature
+         - refactor
+         - fix
+  commit_groups:
+     title_maps:
+       feature: Features
+       refactor: Refactors
+       fix: Fixes
+  header:
+    pattern: "^(.*)$"
+    pattern_maps:
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
