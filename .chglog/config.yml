@@ -3,22 +3,23 @@ template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
   repository_url: https://github.com/notblessy/bless
-options:
   commits:
      filters:
        Type:
          - feature
-         - refactor
          - fix
+         - refactor
   commit_groups:
      title_maps:
-       feature: Features
-       refactor: Refactors
+       feature: New Features
        fix: Fixes
+       refactor: Code Improvements
   header:
-    pattern: "^(.*)$"
+    pattern: "^(\\w*)\\:\\s(.*)$"
     pattern_maps:
+      - Type
       - Subject
   notes:
     keywords:
       - BREAKING CHANGE
+
