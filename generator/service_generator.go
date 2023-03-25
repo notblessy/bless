@@ -64,7 +64,7 @@ func (r repository) checkExistingProjectDirectory(name string) error {
 	_, err := os.Stat(name)
 	if os.IsNotExist(err) {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Println(fmt.Sprintf("%s is OK!, want to scaffold a go service (Y/N)? ", name))
+		fmt.Printf("%s is OK!, want to scaffold a go service (Y/N)? ", name)
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -115,11 +115,11 @@ func (r repository) generateScaffoldScript() {
 
 // scaffold runs scaffold script
 func (r repository) scaffold(name string, gitOrigin string, project string) {
-	fmt.Println("start scaffolding project: " + name)
+	fmt.Println("start scaffolding project")
 
 	cmd := exec.Command(bash, scaffolder, name, gitOrigin, project)
 	defer func() {
-		// _ = os.Remove(scaffolder)
+		_ = os.Remove(scaffolder)
 	}()
 
 	err := r.runScript(cmd)

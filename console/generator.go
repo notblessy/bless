@@ -9,7 +9,7 @@ import (
 )
 
 var generatorCmd = &cobra.Command{
-	Use:   "tolong-generate [name] [origin]",
+	Use:   "tolong-generate [name] [git-host] [git-project]",
 	Short: "a service generator",
 	Long: `
 	  __    __              
@@ -30,8 +30,8 @@ func generateProject(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("scaffolding finished with name: %s", args[0])
+		fmt.Println("scaffolding finished!")
 	} else {
-		log.Fatal("expected argument <service-name> <git-origin> <git-project>' ")
+		log.Fatal("expected argument <service-name> <git-host> <git-project>")
 	}
 }
