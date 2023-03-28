@@ -30,10 +30,8 @@ cd ..;
 const DefaultGeneratorScript string = `#!/usr/bin/env bash
 name=$1;
 origin=$2;
-project=$3;
-find $name -type f -exec sed -i '' "s/skelago/$name/g" {} \;
-find $name -type f -exec sed -i '' "s/github/$origin/g" {} \;
-find $name -type f -exec sed -i '' "s/notblessy/$project/g" {} \;
+find $name -type f -exec sed -i '' "s!skelago!$name!g" {} \;
+find $name -type f -exec sed -i '' "s!github.com/notblessy!$origin!g" {} \;
 cp $name/.env.sample $name/.env;
 cd $name;
 go mod tidy;
