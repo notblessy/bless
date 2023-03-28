@@ -16,13 +16,12 @@ import (
 type (
 	// Service define repository generator
 	Service interface {
-		GenerateService(name string, gitOrigin string, project string) error
+		GenerateService(name string, gitOrigin string) error
 	}
 
 	repository struct {
 		name      string
 		gitOrigin string
-		project   string
 	}
 )
 
@@ -37,10 +36,9 @@ func NewServiceGenerator() Service {
 	return &repository{}
 }
 
-func (r repository) GenerateService(name string, gitOrigin string, project string) error {
+func (r repository) GenerateService(name string, gitOrigin string) error {
 	r.name = name
 	r.gitOrigin = gitOrigin
-	r.project = project
 
 	fmt.Println(utils.DefaultServBumper)
 
@@ -53,7 +51,7 @@ func (r repository) GenerateService(name string, gitOrigin string, project strin
 
 	r.pullSkelago(r.name)
 	r.generateScaffoldScript()
-	r.scaffold(r.name, r.gitOrigin, r.project)
+	r.scaffold(r.name, r.gitOrigin)
 
 	return nil
 }
@@ -114,10 +112,10 @@ func (r repository) generateScaffoldScript() {
 }
 
 // scaffold runs scaffold script
-func (r repository) scaffold(name string, gitOrigin string, project string) {
-	fmt.Println("start scaffolding project")
+func (r repository) scaffold(name string, gitOrigin string) {
+	fmt.Println("start scaffolding project", name, gitOrigin)
 
-	cmd := exec.Command(bash, scaffolder, name, gitOrigin, project)
+	cmd := exec.Command(bash, scaffolder, name, gitOrigin)
 	defer func() {
 		_ = os.Remove(scaffolder)
 	}()
@@ -138,6 +136,7 @@ func (r repository) runScript(cmd *exec.Cmd) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
