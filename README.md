@@ -5,7 +5,7 @@ bless can scaffold a go service like a toss.
 ## Installing
 
 ```
-go install github.com/notblessy/bless
+go install github.com/notblessy/bless@latest
 ```
 
 ## Feature

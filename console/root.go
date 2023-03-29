@@ -11,8 +11,8 @@ var rootCmd = &cobra.Command{
 	Use:   "bless",
 	Short: "bless is go service generator",
 	Long: `
-	  __    __              
-	 / /_  / /__  __________
+    __    __              
+   / /_  / /__  __________
   / __ \/ / _ \/ ___/ ___/
  / /_/ / /  __(__  |__  ) 
 /_.___/_/\___/____/____/                         
